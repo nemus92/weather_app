@@ -1,0 +1,37 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.myweather.myapp"
+    },
+    "jhipsterVersion": "6.10.5",
+    "applicationType": "monolith",
+    "baseName": "weather_app",
+    "packageName": "com.myweather.myapp",
+    "packageFolder": "com/myweather/myapp",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZTZhMWE3NmQ3NTgwYTBjNjMxMjFmYzA2ZWE0ZDE0YmM0MTYyYjkwMWQ4MGI2ZDdjY2M5Yjg1N2YyOWZiYzBkYmQ1MzE4NDgwZTA5NDVlZjBlYTVmZDIxOTM2NjEwZDA5NTkwODg2ZjEwYjdhOGI3MTE4NzFhNjExMWU5YTRiNWM=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1611818211549,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "blueprints": [],
+    "skipClient": true
+  }
+}
