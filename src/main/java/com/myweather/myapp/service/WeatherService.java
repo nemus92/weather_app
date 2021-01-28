@@ -59,6 +59,17 @@ public class WeatherService {
 
         System.out.println("CITY TEMPERATURE " + cityTemperature.toString());
 
+        log.debug("Saving weather data for cities {}", "");
+//        return userRepository.findOneByActivationKey(key)
+//            .map(user -> {
+//                // activate given user for the registration key.
+//                user.setActivated(true);
+//                user.setActivationKey(null);
+//                this.clearUserCaches(user);
+//                log.debug("Activated user: {}", user);
+//                return user;
+//            });
+
 //        String description = null;
 //        double temp=0;
 //        int pressure=0;

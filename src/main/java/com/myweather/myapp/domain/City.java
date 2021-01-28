@@ -27,9 +27,12 @@ public class City implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "open_weather_id")
+    private Integer openWeatherId;
+
     @OneToMany(mappedBy = "city")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<Weather> weathers = new HashSet<>();
+    private Set<Weather> ids = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -53,29 +56,42 @@ public class City implements Serializable {
         this.name = name;
     }
 
-    public Set<Weather> getWeathers() {
-        return weathers;
+    public Integer getOpenWeatherId() {
+        return openWeatherId;
+    }
+
+    public City openWeatherId(Integer openWeatherId) {
+        this.openWeatherId = openWeatherId;
+        return this;
+    }
+
+    public void setOpenWeatherId(Integer openWeatherId) {
+        this.openWeatherId = openWeatherId;
+    }
+
+    public Set<Weather> getIds() {
+        return ids;
     }
 
     public City ids(Set<Weather> weathers) {
-        this.weathers = weathers;
+        this.ids = weathers;
         return this;
     }
 
     public City addId(Weather weather) {
-        this.weathers.add(weather);
+        this.ids.add(weather);
         weather.setCity(this);
         return this;
     }
 
     public City removeId(Weather weather) {
-        this.weathers.remove(weather);
+        this.ids.remove(weather);
         weather.setCity(null);
         return this;
     }
 
-    public void setWeathers(Set<Weather> weathers) {
-        this.weathers = weathers;
+    public void setIds(Set<Weather> weathers) {
+        this.ids = weathers;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -101,6 +117,7 @@ public class City implements Serializable {
         return "City{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", openWeatherId=" + getOpenWeatherId() +
             "}";
     }
 }
