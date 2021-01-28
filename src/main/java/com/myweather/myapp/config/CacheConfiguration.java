@@ -48,6 +48,9 @@ public class CacheConfiguration {
             createCache(cm, com.myweather.myapp.domain.User.class.getName());
             createCache(cm, com.myweather.myapp.domain.Authority.class.getName());
             createCache(cm, com.myweather.myapp.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.myweather.myapp.domain.Weather.class.getName());
+            createCache(cm, com.myweather.myapp.domain.City.class.getName());
+            createCache(cm, com.myweather.myapp.domain.City.class.getName() + ".ids");
             // jhipster-needle-ehcache-add-entry
         };
     }

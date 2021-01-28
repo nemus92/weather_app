@@ -119,5 +119,5 @@ jhipster:
 
 # application:
 weather:
-  url: api.openweathermap.org/data/2.5/weather
+  url: api.openweathermap.org/data/2.5/group
   api_key: dd8990464c240475506abc61e958cce0
