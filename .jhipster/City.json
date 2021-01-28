@@ -1,0 +1,28 @@
+{
+  "name": "City",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "weather",
+      "otherEntityRelationshipName": "city",
+      "relationshipName": "id"
+    }
+  ],
+  "changelogDate": "20210128210155",
+  "entityTableName": "city",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "Weather",
+  "fields": [
+    {
+      "fieldName": "temperature",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "feelsLike",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "temperatureMin",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "temperatureMax",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "city",
+      "otherEntityRelationshipName": "id",
+      "relationshipName": "city",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210128210055",
+  "entityTableName": "weather",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}
