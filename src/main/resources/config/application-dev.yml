@@ -37,7 +37,7 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:mem:weather_app;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:weather_app;DB_CLOSE_DELAY=-1;
     username: weather_app
     password:
     hikari:
@@ -118,3 +118,6 @@ jhipster:
 # ===================================================================
 
 # application:
+weather:
+  url: api.openweathermap.org/data/2.5/weather
+  api_key: dd8990464c240475506abc61e958cce0
