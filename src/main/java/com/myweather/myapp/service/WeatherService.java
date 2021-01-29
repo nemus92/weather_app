@@ -11,7 +11,10 @@ import com.myweather.myapp.models.WeatherApiData;
 import com.myweather.myapp.web.rest.CityResource;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import org.json.JSONArray;
@@ -43,36 +46,40 @@ public class WeatherService {
 
     public List<CitiesWeatherVM> getWeatherForThreeCities(CitySearchDto city) throws ParseException, JsonProcessingException {
 
-//        final List<City> cities = cityRepository.findByNameAndCountry();
+        final List<City> cities = cityRepository.findCitiesByName(city.getCities());
+
+        // TODO make this better
+        if (cities.isEmpty()) {
+            throw new NoResultException("No cities found for names " + city.getCities());
+        }
+
+        final Map<Integer, ResponseEntity<String>> responseEntityMap = new HashMap<>();
+
+        for (City foundCity : cities) {
+            final UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(weatherAppData.getWeatherApiUrl())
+                .path("")
+                .query("q={city}&appid={appid}")
+                .buildAndExpand(foundCity.getId(), weatherAppData.getWeatherApiKey());
+
+            final String uri = uriComponents.toUriString();
+            System.out.println("uri " + uri.toString());
+
+            final ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
+            responseEntityMap.put(foundCity.getId().intValue(), response);
+        }
+
+//        ObjectMapper objectMapper = new ObjectMapper();
 //
-//        if (cities.isEmpty()) {
-//            throw new NoResultException("No cities found!");
-//        }
-
-        UriComponents uriComponents = UriComponentsBuilder
-            .newInstance()
-            .scheme("http")
-            .host(weatherAppData.getWeatherApiUrl())
-            .path("")
-            .query("q={city}&appid={appid}")
-            .buildAndExpand(city.getCities().get(0), weatherAppData.getWeatherApiKey());
-
-        String uri = uriComponents.toUriString();
-        System.out.println("uri " + uri.toString());
-
-        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
-
-        System.out.println(response);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        CityId cityId = objectMapper.readValue(response.getBody(), CityId.class);
-
-        CityTemperature cityTemperature = objectMapper.readValue(response.getBody(), CityTemperature.class);
-
-        System.out.println("CITY ID " + cityId.toString());
-
-        System.out.println("CITY TEMPERATURE " + cityTemperature.toString());
+//        CityId cityId = objectMapper.readValue(response.getBody(), CityId.class);
+//
+//        CityTemperature cityTemperature = objectMapper.readValue(response.getBody(), CityTemperature.class);
+//
+//        System.out.println("CITY ID " + cityId.toString());
+//
+//        System.out.println("CITY TEMPERATURE " + cityTemperature.toString());
 
         log.debug("Saving weather data for cities {}", "");
 //        return userRepository.findOneByActivationKey(key)
