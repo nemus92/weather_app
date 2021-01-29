@@ -34,6 +34,13 @@ public class City implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Weather> ids = new HashSet<>();
 
+    public City() {}
+
+    public City(String name, Integer openWeatherId) {
+        this.name = name;
+        this.openWeatherId = openWeatherId;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;

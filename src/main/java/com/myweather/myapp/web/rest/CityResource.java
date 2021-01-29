@@ -1,15 +1,24 @@
 package com.myweather.myapp.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myweather.myapp.domain.City;
 import com.myweather.myapp.repository.CityRepository;
+import com.myweather.myapp.security.AuthoritiesConstants;
+import com.myweather.myapp.service.CityService;
+import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.web.rest.errors.BadRequestAlertException;
 
+import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import java.text.ParseException;
+import javax.inject.Inject;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +42,23 @@ public class CityResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    @Inject
+    CityService cityService;
+
     private final CityRepository cityRepository;
 
     public CityResource(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
+    }
+
+    @GetMapping("/readAndSaveCities")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> readAndSaveCityData() {
+        log.debug("REST request to save cities in database");
+
+        cityService.readAndSaveCities();
+
+        return ResponseEntity.noContent().build();
     }
 
     /**

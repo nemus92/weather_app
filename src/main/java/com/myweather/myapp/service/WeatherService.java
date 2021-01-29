@@ -2,14 +2,18 @@ package com.myweather.myapp.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myweather.myapp.domain.City;
 import com.myweather.myapp.models.CityId;
 import com.myweather.myapp.models.CityTemperature;
+import com.myweather.myapp.repository.CityRepository;
 import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.models.WeatherApiData;
+import com.myweather.myapp.web.rest.CityResource;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import java.text.ParseException;
 import java.util.List;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,13 +30,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class WeatherService {
 
-    @Inject RestTemplate restTemplate;
+    @Inject
+    RestTemplate restTemplate;
 
-    @Inject WeatherApiData weatherAppData;
+    @Inject
+    WeatherApiData weatherAppData;
+
+    @Inject
+    CityRepository cityRepository;
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public List<CitiesWeatherVM> getWeatherForThreeCities(CitySearchDto city) throws ParseException, JsonProcessingException {
+
+//        final List<City> cities = cityRepository.findByNameAndCountry();
+//
+//        if (cities.isEmpty()) {
+//            throw new NoResultException("No cities found!");
+//        }
 
         UriComponents uriComponents = UriComponentsBuilder
             .newInstance()

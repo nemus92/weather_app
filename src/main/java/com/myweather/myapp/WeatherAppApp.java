@@ -2,9 +2,11 @@ package com.myweather.myapp;
 
 import com.myweather.myapp.config.ApplicationProperties;
 
+import com.myweather.myapp.service.CityService;
 import io.github.jhipster.config.DefaultProfileUtil;
 import io.github.jhipster.config.JHipsterConstants;
 
+import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
