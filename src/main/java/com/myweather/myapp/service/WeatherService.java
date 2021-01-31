@@ -50,7 +50,7 @@ public class WeatherService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public List<CitiesWeatherVM> saveWeatherForCities(List<String> cityNames) throws ParseException, JsonProcessingException, BadRequestException {
+    public List<CitiesWeatherVM> saveWeatherForCities(List<String> cityNames) throws BadRequestException {
 
         if (cityNames.size() > 3) {
             throw new BadRequestException("Attempting to save weather for more than three cities! Maximum size is 3!");

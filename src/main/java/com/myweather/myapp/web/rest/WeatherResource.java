@@ -58,14 +58,12 @@ public class WeatherResource {
      *
      * @param cityNames the weather to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the weather has already an ID.
-     * @throws ParseException exception
-     * @throws JsonProcessingException exception
      * @throws BadRequestException exception throw in case if incorrect data type is sent or if more than three cities have been sent
      */
     @PostMapping("/citiesWeatherData")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<CitiesWeatherVM>> readCityWeatherData(@Valid @RequestBody List<String> cityNames)
-        throws ParseException, JsonProcessingException, BadRequestException {
+        throws  BadRequestException {
         log.debug("REST request to read city weather data : {}", cityNames);
 
         final List<CitiesWeatherVM> cities = weatherService.saveWeatherForCities(cityNames);
