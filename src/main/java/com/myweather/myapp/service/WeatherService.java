@@ -132,6 +132,7 @@ public class WeatherService {
             citiesAverageTemperatureVMS.add(citiesWeatherVM);
         }
 
+        // TODO sorting of cities with avg temperature by temperature
         citiesAverageTemperatureVMS.sort(Comparator.comparing(CitiesAverageTemperatureVM::getAverageTemperature));
 
         return citiesAverageTemperatureVMS;

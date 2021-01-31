@@ -54,16 +54,17 @@ public class WeatherResource {
     }
 
     /**
-     * {@code POST  /weathers} : Create a new weather.
+     * {@code POST  /citiesWeatherData} : Create a new weather.
      *
-     * @param cityNames the weather to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the weather has already an ID.
+     * @param cityNames for the weather data to create.
+     * @return the {@link ResponseEntity} with status {@code 200 (Ok)} with the body of cities, or with status {@code 400 (Bad Request)} if the city names are
+     * of incorrect data type.
      * @throws BadRequestException exception throw in case if incorrect data type is sent or if more than three cities have been sent
      */
     @PostMapping("/citiesWeatherData")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<CitiesWeatherVM>> readCityWeatherData(@Valid @RequestBody List<String> cityNames)
-        throws  BadRequestException {
+        throws BadRequestException {
         log.debug("REST request to read city weather data : {}", cityNames);
 
         final List<CitiesWeatherVM> cities = weatherService.saveWeatherForCities(cityNames);
@@ -71,6 +72,14 @@ public class WeatherResource {
         return ResponseEntity.ok().body(cities);
     }
 
+    /**
+     * {@code POST  /getAverageWeatherData} : Create a new weather.
+     *
+     * @param weatherCitySearchDto for searching the weather data.
+     * @return the {@link ResponseEntity} with status {@code 200 (Ok)} and with the body of cities with average temperatures for five days, or with status
+     * {@code 400 (Bad Request)} if the city ids are of incorrect data type.
+     * @throws BadRequestException exception throw in case if incorrect data type is sent or if more than three cities have been sent
+     */
     @PostMapping("/getAverageWeatherData")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<CitiesAverageTemperatureVM>> getAverageWeatherDataSorted(@Valid @RequestBody WeatherCitySearchDto weatherCitySearchDto)
@@ -86,7 +95,8 @@ public class WeatherResource {
      * {@code POST  /weathers} : Create a new weather.
      *
      * @param weather the weather to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the weather has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the
+     * weather has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/weathers")
@@ -105,9 +115,8 @@ public class WeatherResource {
      * {@code PUT  /weathers} : Updates an existing weather.
      *
      * @param weather the weather to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated weather,
-     * or with status {@code 400 (Bad Request)} if the weather is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the weather couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated weather, or with status {@code 400 (Bad Request)} if the
+     * weather is not valid, or with status {@code 500 (Internal Server Error)} if the weather couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/weathers")
