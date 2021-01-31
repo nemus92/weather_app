@@ -1,6 +1,7 @@
 package com.myweather.myapp.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.myweather.myapp.domain.City;
 import com.myweather.myapp.domain.Weather;
 import com.myweather.myapp.repository.WeatherRepository;
 import com.myweather.myapp.security.AuthoritiesConstants;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,12 +53,21 @@ public class WeatherResource {
         this.weatherRepository = weatherRepository;
     }
 
+    /**
+     * {@code POST  /weathers} : Create a new weather.
+     *
+     * @param citySearchDto the weather to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the weather has already an ID.
+     * @throws.
+     */
     @PostMapping("/citiesWeatherData")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public List<CitiesWeatherVM> readCityWeatherData(@Valid @RequestBody CitySearchDto citySearchDto) throws ParseException, JsonProcessingException {
+    public ResponseEntity<List<CitiesWeatherVM>> readCityWeatherData(@Valid @RequestBody CitySearchDto citySearchDto) throws ParseException, JsonProcessingException {
         log.debug("REST request to read city weather data : {}", citySearchDto);
 
-        return weatherService.getWeatherForThreeCities(citySearchDto);
+        final List<CitiesWeatherVM> cities = weatherService.saveWeatherForCities(citySearchDto);
+
+        return ResponseEntity.ok().body(cities);
     }
 
     /**

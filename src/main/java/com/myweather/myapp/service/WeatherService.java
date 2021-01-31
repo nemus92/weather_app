@@ -3,16 +3,23 @@ package com.myweather.myapp.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myweather.myapp.domain.City;
+import com.myweather.myapp.domain.Weather;
+import com.myweather.myapp.models.WeatherData;
 import com.myweather.myapp.models.WeatherTemperature;
 import com.myweather.myapp.models.WeatherTemperatureList;
 import com.myweather.myapp.repository.CityRepository;
+import com.myweather.myapp.repository.WeatherRepository;
 import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.models.WeatherApiData;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import liquibase.pro.packaged.W;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -38,9 +45,12 @@ public class WeatherService {
     @Inject
     CityRepository cityRepository;
 
+    @Inject
+    WeatherRepository weatherRepository;
+
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public List<CitiesWeatherVM> getWeatherForThreeCities(CitySearchDto city) throws ParseException, JsonProcessingException {
+    public List<CitiesWeatherVM> saveWeatherForCities(CitySearchDto city) throws ParseException, JsonProcessingException {
 
         final List<City> cities = cityRepository.findCitiesByName(city.getCities());
 
@@ -48,6 +58,8 @@ public class WeatherService {
         if (cities.isEmpty()) {
             throw new NoResultException("No cities found for names " + city.getCities());
         }
+
+        final List<CitiesWeatherVM> savedCitiesData = new ArrayList<>();
 
         for (City foundCity : cities) {
             final UriComponents uriComponents = UriComponentsBuilder
@@ -58,100 +70,31 @@ public class WeatherService {
                 .query("q={city}&appid={appid}")
                 .buildAndExpand(foundCity.getId(), weatherAppData.getWeatherApiKey());
 
-            final String uri = uriComponents.toUriString();
-            System.out.println("uri " + uri.toString());
-
-//            final ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
-
             final ResponseEntity<WeatherTemperatureList> response = restTemplate
-                .getForEntity(uri, WeatherTemperatureList.class);
+                .getForEntity(uriComponents.toUriString(), WeatherTemperatureList.class);
 
-            System.out.println("listttttt " + response.getBody().getList().size());
+            log.debug("Saving weather data for city {}", foundCity.getName());
+            if (Optional.ofNullable(response.getBody()).isPresent() && Optional.ofNullable(response.getBody().getList()).isPresent()) {
+                for (WeatherTemperature weatherTemperature : response.getBody().getList()) {
+                    if (Optional.ofNullable(weatherTemperature.getMain()).isPresent()) {
+                        final WeatherData mainData = weatherTemperature.getMain();
 
-//            final ObjectMapper objectMapper = new ObjectMapper();
-//
-//
-//            final JSONObject responseObject = new JSONObject(uri);
-//
-//            System.out.println("JSONObjectttt "  + responseObject);
-//
-//            final JSONArray weatherObject = responseObject.getJSONArray("list");
-//
-//            System.out.println("weatherObject length " + weatherObject.length());
-//            for (int i = 0; i < weatherObject.length(); i++) {
-//                final JSONObject singleWeatherObject = weatherObject.getJSONObject(i);
-//
-//                final JSONObject singleTemperatureObject = singleWeatherObject.getJSONObject("main");
-//            }
+                        final Weather weather = new Weather(mainData.getTemp(), mainData.getFeelsLike(), mainData.getTempMin(), mainData.getTempMax(),
+                            mainData.getDate(), foundCity);
 
-//            responseEntityMap.put(foundCity.getId().intValue(), response);
+                        weatherRepository.save(weather);
+                    } else {
+                        throw new NoResultException("Response body main for city " + foundCity.getName() + " is empty!");
+                    }
+                }
+                savedCitiesData.add(new CitiesWeatherVM(foundCity.getId(), foundCity.getName(), foundCity.getOpenWeatherId()));
+
+            } else {
+                throw new NoResultException("Response body for city " + foundCity.getName() + " is empty!");
+            }
         }
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        CityId cityId = objectMapper.readValue(response.getBody(), CityId.class);
-//
-//        CityTemperature cityTemperature = objectMapper.readValue(response.getBody(), CityTemperature.class);
-//
-//        System.out.println("CITY ID " + cityId.toString());
-//
-//        System.out.println("CITY TEMPERATURE " + cityTemperature.toString());
-
-        log.debug("Saving weather data for cities {}", "");
-//        return userRepository.findOneByActivationKey(key)
-//            .map(user -> {
-//                // activate given user for the registration key.
-//                user.setActivated(true);
-//                user.setActivationKey(null);
-//                this.clearUserCaches(user);
-//                log.debug("Activated user: {}", user);
-//                return user;
-//            });
-
-//        String description = null;
-//        double temp=0;
-//        int pressure=0;
-//        int humidity = 0;
-//        int temp_min=0;
-//        int temp_max=0;
-//        int temp_kf=0;
-//        int sea_level=0;
-//        int grnd_level=0;
-//
-//        java.util.Date date1 = null;
-//
-//        String date = null;
-//
-//        String icon=null;
-//        String WeatherCondition=null;
-//        int id=0;
-//
-//        JSONObject root = new JSONObject(result);
-//
-//        JSONArray weatherObject = root.getJSONArray("list");
-//
-//        for(int i = 0; i < weatherObject.length(); i++) {
-//
-//            JSONObject arrayElement = weatherObject.getJSONObject(i);
-//
-//            JSONObject main = arrayElement.getJSONObject("main");
-//            temp = (int) main.getFloat("temp");
-//            pressure =  main.getInt("pressure");
-//            humidity = main.getInt("humidity");
-//            temp_min = main.getInt("temp_min");
-//            temp_max = main.getInt("temp_max");
-//            temp_kf = main.getInt("temp_kf");
-//            sea_level = main.getInt("sea_level");
-//            grnd_level = main.getInt("grnd_level");
-//
-//            description = arrayElement.getJSONArray("weather").getJSONObject(0).getString("description");
-//            icon = arrayElement.getJSONArray("weather").getJSONObject(0).getString("icon");
-//            WeatherCondition = arrayElement.getJSONArray("weather").getJSONObject(0).getString("main");
-//            id = arrayElement.getJSONArray("weather").getJSONObject(0).getInt("id");
-//
-//        }
-
-        return null;
+        return savedCitiesData;
     }
 
 }

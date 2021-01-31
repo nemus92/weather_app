@@ -43,6 +43,18 @@ public class Weather implements Serializable {
     @JsonIgnoreProperties(value = "ids", allowSetters = true)
     private City city;
 
+    public Weather() {}
+
+    public Weather(Double temperature, Double feelsLike, Double temperatureMin, Double temperatureMax, ZonedDateTime date,
+        City city) {
+        this.temperature = temperature;
+        this.feelsLike = feelsLike;
+        this.temperatureMin = temperatureMin;
+        this.temperatureMax = temperatureMax;
+        this.date = date;
+        this.city = city;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;

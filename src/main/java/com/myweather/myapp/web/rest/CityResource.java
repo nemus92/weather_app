@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,21 +52,27 @@ public class CityResource {
         this.cityRepository = cityRepository;
     }
 
+    /**
+     * {@code GET  /readAndSaveCities} : Read cities from json file, saves to DB
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (Ok)}.
+     */
     @GetMapping("/readAndSaveCities")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Void> readAndSaveCityData() {
+    public ResponseEntity<String> readAndSaveCityData() {
         log.debug("REST request to save cities in database");
 
         cityService.readAndSaveCities();
 
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>("Successfully saved cities to DB from json file.", HttpStatus.OK);
     }
 
     /**
      * {@code POST  /cities} : Create a new city.
      *
      * @param city the city to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new city, or with status {@code 400 (Bad Request)} if the city has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new city, or with status {@code 400 (Bad Request)} if the city has
+     * already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/cities")
@@ -84,9 +91,8 @@ public class CityResource {
      * {@code PUT  /cities} : Updates an existing city.
      *
      * @param city the city to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated city,
-     * or with status {@code 400 (Bad Request)} if the city is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the city couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated city, or with status {@code 400 (Bad Request)} if the city is
+     * not valid, or with status {@code 500 (Internal Server Error)} if the city couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/cities")

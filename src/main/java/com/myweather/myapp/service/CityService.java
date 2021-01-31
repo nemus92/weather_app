@@ -2,6 +2,7 @@ package com.myweather.myapp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myweather.myapp.domain.City;
+import com.myweather.myapp.models.CityInfo;
 import com.myweather.myapp.repository.CityRepository;
 import java.io.IOException;
 import java.util.Arrays;
