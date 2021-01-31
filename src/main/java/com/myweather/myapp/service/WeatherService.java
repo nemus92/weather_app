@@ -72,7 +72,7 @@ public class WeatherService {
                 .scheme("http")
                 .host(weatherAppData.getWeatherApiUrl())
                 .path("")
-                .query("q={city}&appid={appid}")
+                .query("q={city}&appid={appid}&units=metric")
                 .buildAndExpand(foundCity.getId(), weatherAppData.getWeatherApiKey());
 
             final ResponseEntity<WeatherTemperatures> response = restTemplate
