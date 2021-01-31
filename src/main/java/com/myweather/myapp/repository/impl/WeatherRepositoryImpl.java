@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import liquibase.pro.packaged.S;
 
 public class WeatherRepositoryImpl implements WeatherRepositoryCustom {
 
@@ -17,13 +18,17 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom {
     public List<Weather> getWeatherDataForDates(ZonedDateTime dateFrom, ZonedDateTime dateTo,
         List<Long> cityIds) {
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT w FROM Weather w WHERE w.date BETWEEN :dateFrom AND :dateTo");
+
         if (cityIds.isEmpty()) {
-            return entityManager.createQuery("SELECT w FROM Weather w WHERE w.date BETWEEN :dateFrom AND :dateTo", Weather.class)
+            return entityManager.createQuery(sb.toString(), Weather.class)
                 .setParameter("dateFrom", dateFrom)
                 .setParameter("dateTo", dateTo)
                 .getResultList();
         } else {
-            return entityManager.createQuery("SELECT w FROM Weather w WHERE w.date BETWEEN :dateFrom AND :dateTo AND w.city.id in :cityIds", Weather.class)
+            sb.append(" AND w.city.id in :cityIds");
+            return entityManager.createQuery(sb.toString(), Weather.class)
                 .setParameter("cityIds", cityIds)
                 .setParameter("dateFrom", dateFrom)
                 .setParameter("dateTo", dateTo)

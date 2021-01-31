@@ -110,7 +110,7 @@ public class WeatherService {
         // TODO read all weather data for params, so to have less queries later
         final List<Weather> weathers = weatherRepository.getWeatherDataForDates(weatherCitySearchDto.getDateFrom(), weatherCitySearchDto.getDateTo(), weatherCitySearchDto.getCityIds());
 
-        // TODO used Set to remove duplicates. Maybe edit compareTo?
+        // TODO used Set to remove duplicates
         final Set<City> cities = weathers.stream().distinct().map(Weather::getCity).collect(Collectors.toSet());
 
         final List<CitiesAverageTemperatureVM> citiesAverageTemperatureVMS = new ArrayList<>();
