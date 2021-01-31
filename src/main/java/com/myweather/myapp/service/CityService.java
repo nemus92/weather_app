@@ -25,8 +25,9 @@ public class CityService {
         // TODO creating object mapper so I can read from json file, and map data to model (POJO), limited to 500 cities
         final ObjectMapper mapper = new ObjectMapper();
 
+        // TODO city-list.json contains all cities that are available for OpenWeatherApi, I'm using just a few cities
         try {
-            final List<CityInfo> cities = Arrays.asList(mapper.readValue(new ClassPathResource("cities_json/city-list.json").getFile(), CityInfo[].class));
+            final List<CityInfo> cities = Arrays.asList(mapper.readValue(new ClassPathResource("cities_json/city-list-small.json").getFile(), CityInfo[].class));
 
             final List<City> existingCities = cityRepository.findAll();
 

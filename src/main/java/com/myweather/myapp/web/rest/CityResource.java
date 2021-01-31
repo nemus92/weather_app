@@ -1,19 +1,14 @@
 package com.myweather.myapp.web.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myweather.myapp.domain.City;
 import com.myweather.myapp.repository.CityRepository;
 import com.myweather.myapp.security.AuthoritiesConstants;
 import com.myweather.myapp.service.CityService;
-import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.web.rest.errors.BadRequestAlertException;
 
-import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import java.text.ParseException;
 import javax.inject.Inject;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

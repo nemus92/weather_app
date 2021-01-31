@@ -17,9 +17,6 @@ public class WeatherData {
     @JsonProperty("temp_max")
     private Double tempMax;
 
-    @JsonProperty("dt")
-    private ZonedDateTime date;
-
     public Double getTemp() {
         return temp;
     }
@@ -52,14 +49,6 @@ public class WeatherData {
         this.tempMax = tempMax;
     }
 
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(ZonedDateTime date) {
-        this.date = date;
-    }
-
     @Override
     public String toString() {
         return "WeatherData{" +
@@ -67,7 +56,6 @@ public class WeatherData {
             ", feelsLike=" + feelsLike +
             ", tempMin=" + tempMin +
             ", tempMax=" + tempMax +
-            ", date=" + date +
             '}';
     }
 }

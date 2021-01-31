@@ -1,24 +1,24 @@
 package com.myweather.myapp.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.myweather.myapp.domain.City;
 import com.myweather.myapp.domain.Weather;
 import com.myweather.myapp.repository.WeatherRepository;
 import com.myweather.myapp.security.AuthoritiesConstants;
 import com.myweather.myapp.service.WeatherService;
-import com.myweather.myapp.service.dto.CitySearchDto;
+import com.myweather.myapp.service.dto.WeatherCitySearchDto;
 import com.myweather.myapp.web.rest.errors.BadRequestAlertException;
 
+import com.myweather.myapp.web.rest.vm.CitiesAverageTemperatureVM;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.undertow.util.BadRequestException;
 import java.text.ParseException;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,16 +56,30 @@ public class WeatherResource {
     /**
      * {@code POST  /weathers} : Create a new weather.
      *
-     * @param citySearchDto the weather to create.
+     * @param cityNames the weather to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new weather, or with status {@code 400 (Bad Request)} if the weather has already an ID.
-     * @throws.
+     * @throws ParseException exception
+     * @throws JsonProcessingException exception
+     * @throws BadRequestException exception throw in case if incorrect data type is sent or if more than three cities have been sent
      */
     @PostMapping("/citiesWeatherData")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<CitiesWeatherVM>> readCityWeatherData(@Valid @RequestBody CitySearchDto citySearchDto) throws ParseException, JsonProcessingException {
-        log.debug("REST request to read city weather data : {}", citySearchDto);
+    public ResponseEntity<List<CitiesWeatherVM>> readCityWeatherData(@Valid @RequestBody List<String> cityNames)
+        throws ParseException, JsonProcessingException, BadRequestException {
+        log.debug("REST request to read city weather data : {}", cityNames);
 
-        final List<CitiesWeatherVM> cities = weatherService.saveWeatherForCities(citySearchDto);
+        final List<CitiesWeatherVM> cities = weatherService.saveWeatherForCities(cityNames);
+
+        return ResponseEntity.ok().body(cities);
+    }
+
+    @PostMapping("/getAverageWeatherData")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<CitiesAverageTemperatureVM>> getAverageWeatherDataSorted(@Valid @RequestBody WeatherCitySearchDto weatherCitySearchDto)
+        throws BadRequestException {
+        log.debug("REST request to read city weather data : {}", weatherCitySearchDto);
+
+        final List<CitiesAverageTemperatureVM> cities = weatherService.readWeatherDataSorted(weatherCitySearchDto);
 
         return ResponseEntity.ok().body(cities);
     }

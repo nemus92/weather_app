@@ -1,7 +1,6 @@
 package com.myweather.myapp.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myweather.myapp.domain.City;
 import com.myweather.myapp.domain.Weather;
 import com.myweather.myapp.models.WeatherData;
@@ -9,22 +8,23 @@ import com.myweather.myapp.models.WeatherTemperature;
 import com.myweather.myapp.models.WeatherTemperatureList;
 import com.myweather.myapp.repository.CityRepository;
 import com.myweather.myapp.repository.WeatherRepository;
-import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.models.WeatherApiData;
+import com.myweather.myapp.service.dto.WeatherCitySearchDto;
+import com.myweather.myapp.web.rest.vm.CitiesAverageTemperatureVM;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
+import io.undertow.util.BadRequestException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import liquibase.pro.packaged.W;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.hibernate.boot.model.source.internal.hbm.CompositeIdentifierSingularAttributeSourceManyToOneImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -50,13 +50,20 @@ public class WeatherService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public List<CitiesWeatherVM> saveWeatherForCities(CitySearchDto city) throws ParseException, JsonProcessingException {
+    public List<CitiesWeatherVM> saveWeatherForCities(List<String> cityNames) throws ParseException, JsonProcessingException, BadRequestException {
 
-        final List<City> cities = cityRepository.findCitiesByName(city.getCities());
+        if (cityNames.size() > 3) {
+            throw new BadRequestException("Attempting to save weather for more than three cities! Maximum size is 3!");
+        }
 
-        // TODO make this message better
+        final List<City> cities = cityRepository.findCitiesByName(cityNames);
+
         if (cities.isEmpty()) {
-            throw new NoResultException("No cities found for names " + city.getCities());
+            throw new NoResultException("No cities found for names " + cityNames);
+        }
+
+        if (cities.size() != cityNames.size()) {
+            log.debug("Not all cities have been found, only {}", cities.stream().map(City::getName).collect(Collectors.toList()));
         }
 
         final List<CitiesWeatherVM> savedCitiesData = new ArrayList<>();
@@ -80,7 +87,7 @@ public class WeatherService {
                         final WeatherData mainData = weatherTemperature.getMain();
 
                         final Weather weather = new Weather(mainData.getTemp(), mainData.getFeelsLike(), mainData.getTempMin(), mainData.getTempMax(),
-                            mainData.getDate(), foundCity);
+                            weatherTemperature.getDate(), foundCity);
 
                         weatherRepository.save(weather);
                     } else {
@@ -97,4 +104,39 @@ public class WeatherService {
         return savedCitiesData;
     }
 
+    public List<CitiesAverageTemperatureVM> readWeatherDataSorted(WeatherCitySearchDto weatherCitySearchDto) throws BadRequestException {
+
+        if (weatherCitySearchDto.getCityIds().size() > 3) {
+            throw new BadRequestException("Attempting to read weather for more than three cities! Maximum size is 3!");
+        }
+
+        // TODO read all weather data for params, so to have less queries later
+        final List<Weather> weathers = weatherRepository.getWeatherDataForDates(weatherCitySearchDto.getDateFrom(), weatherCitySearchDto.getDateTo(), weatherCitySearchDto.getCityIds());
+
+        // TODO used Set to remove duplicates. Maybe edit compareTo?
+        final Set<City> cities = weathers.stream().distinct().map(Weather::getCity).collect(Collectors.toSet());
+
+        final List<CitiesAverageTemperatureVM> citiesAverageTemperatureVMS = new ArrayList<>();
+
+        for (City city : cities) {
+            double averageTemperature = 0.0;
+            double sumTemperature = 0.0;
+
+            final List<Double> temperaturesForCity = weathers.stream().filter(weather -> weather.getCity().getId().equals(city.getId()))
+                .map(Weather::getTemperature).collect(Collectors.toList());
+
+            for (Double temperature : temperaturesForCity) {
+                sumTemperature += temperature;
+
+                averageTemperature = sumTemperature / temperaturesForCity.size();
+            }
+
+            final CitiesAverageTemperatureVM citiesWeatherVM = new CitiesAverageTemperatureVM(city.getId(), city.getName(), averageTemperature);
+            citiesAverageTemperatureVMS.add(citiesWeatherVM);
+        }
+
+        citiesAverageTemperatureVMS.sort(Comparator.comparing(CitiesAverageTemperatureVM::getAverageTemperature));
+
+        return citiesAverageTemperatureVMS;
+    }
 }

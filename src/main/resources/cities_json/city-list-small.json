@@ -1,0 +1,62 @@
+[
+  {
+    "id": 3194360,
+    "name": "Novi Sad",
+    "state": "",
+    "country": "RS",
+    "coord": {
+      "lon": 19.836941,
+      "lat": 45.251671
+    }
+  },
+  {
+    "id": 787607,
+    "name": "Novi Beograd",
+    "state": "",
+    "country": "RS",
+    "coord": {
+      "lon": 20.42417,
+      "lat": 44.805561
+    }
+  },
+  {
+    "id": 6455259,
+    "name": "Paris",
+    "state": "",
+    "country": "FR",
+    "coord": {
+      "lon": 2.35236,
+      "lat": 48.856461
+    }
+  },
+  {
+    "id": 1006984,
+    "name": "East London",
+    "state": "",
+    "country": "ZA",
+    "coord": {
+      "lon": 27.911619,
+      "lat": -33.015289
+    }
+  },
+  {
+    "id": 2950159,
+    "name": "Berlin",
+    "state": "",
+    "country": "DE",
+    "coord": {
+      "lon": 13.41053,
+      "lat": 52.524368
+    }
+  },
+  {
+    "id": 787657,
+    "name": "Niš",
+    "state": "",
+    "country": "RS",
+    "coord": {
+      "lon": 21.90333,
+      "lat": 43.324718
+    }
+  }
+]

@@ -55,7 +55,7 @@ public class CitiesWeatherVM {
         return "CitiesWeatherVM{" +
             "cityId=" + cityId +
             ", cityName='" + cityName + '\'' +
-            ", cityOpenWeatherId='" + cityOpenWeatherId + '\'' +
+            ", cityOpenWeatherId=" + cityOpenWeatherId +
             '}';
     }
 }
