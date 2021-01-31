@@ -12,6 +12,7 @@ import com.myweather.myapp.service.dto.WeatherCitySearchDto;
 import com.myweather.myapp.web.rest.vm.CitiesAverageTemperatureVM;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import io.undertow.util.BadRequestException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -108,10 +109,16 @@ public class WeatherService {
         }
 
         // TODO read all weather data for params, so to have less queries later
-        final List<Weather> weathers = weatherRepository.getWeatherDataForDates(weatherCitySearchDto.getDateFrom(), weatherCitySearchDto.getDateTo(), weatherCitySearchDto.getCityIds());
+        final List<Weather> weathers = weatherRepository
+            .getWeatherDataForDates(weatherCitySearchDto.getDateFrom(), weatherCitySearchDto.getDateTo(), weatherCitySearchDto.getCityIds());
 
         // TODO used Set to remove duplicates
         final Set<City> cities = weathers.stream().distinct().map(Weather::getCity).collect(Collectors.toSet());
+
+        if (weathers.isEmpty()) {
+            throw new NoResultException(
+                "No weather data for city ids " + weatherCitySearchDto.getCityIds() + " between dates " + weatherCitySearchDto.getDateFrom() + ", and " + weatherCitySearchDto.getDateTo());
+        }
 
         final List<CitiesAverageTemperatureVM> citiesAverageTemperatureVMS = new ArrayList<>();
 
