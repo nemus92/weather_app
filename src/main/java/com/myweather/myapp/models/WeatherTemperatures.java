@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WeatherTemperatureList {
+public class WeatherTemperatures {
 
     @JsonProperty("list")
     List<WeatherTemperature> list = new ArrayList<>();
 
-    public WeatherTemperatureList() {}
+    public WeatherTemperatures() {}
 
-    public WeatherTemperatureList(List<WeatherTemperature> list) {
+    public WeatherTemperatures(List<WeatherTemperature> list) {
         this.list = list;
     }
 

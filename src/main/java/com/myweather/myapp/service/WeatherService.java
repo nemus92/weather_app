@@ -1,11 +1,10 @@
 package com.myweather.myapp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myweather.myapp.domain.City;
 import com.myweather.myapp.domain.Weather;
 import com.myweather.myapp.models.WeatherData;
 import com.myweather.myapp.models.WeatherTemperature;
-import com.myweather.myapp.models.WeatherTemperatureList;
+import com.myweather.myapp.models.WeatherTemperatures;
 import com.myweather.myapp.repository.CityRepository;
 import com.myweather.myapp.repository.WeatherRepository;
 import com.myweather.myapp.models.WeatherApiData;
@@ -13,7 +12,6 @@ import com.myweather.myapp.service.dto.WeatherCitySearchDto;
 import com.myweather.myapp.web.rest.vm.CitiesAverageTemperatureVM;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import io.undertow.util.BadRequestException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import org.hibernate.boot.model.source.internal.hbm.CompositeIdentifierSingularAttributeSourceManyToOneImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +74,8 @@ public class WeatherService {
                 .query("q={city}&appid={appid}")
                 .buildAndExpand(foundCity.getId(), weatherAppData.getWeatherApiKey());
 
-            final ResponseEntity<WeatherTemperatureList> response = restTemplate
-                .getForEntity(uriComponents.toUriString(), WeatherTemperatureList.class);
+            final ResponseEntity<WeatherTemperatures> response = restTemplate
+                .getForEntity(uriComponents.toUriString(), WeatherTemperatures.class);
 
             log.debug("Saving weather data for city {}", foundCity.getName());
             if (Optional.ofNullable(response.getBody()).isPresent() && Optional.ofNullable(response.getBody().getList()).isPresent()) {
