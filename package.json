@@ -19,5 +19,8 @@
   },
   "scripts": {
     "prettier:format": "prettier --write \"{,src/**/}*.{md,json,yml}\""
+  },
+  "dependencies": {
+    "lint": "^0.7.0"
   }
 }

@@ -3,18 +3,14 @@ package com.myweather.myapp.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myweather.myapp.domain.City;
-import com.myweather.myapp.models.CityId;
-import com.myweather.myapp.models.CityTemperature;
+import com.myweather.myapp.models.WeatherTemperature;
+import com.myweather.myapp.models.WeatherTemperatureList;
 import com.myweather.myapp.repository.CityRepository;
 import com.myweather.myapp.service.dto.CitySearchDto;
 import com.myweather.myapp.models.WeatherApiData;
-import com.myweather.myapp.web.rest.CityResource;
 import com.myweather.myapp.web.rest.vm.CitiesWeatherVM;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import org.json.JSONArray;
@@ -48,12 +44,10 @@ public class WeatherService {
 
         final List<City> cities = cityRepository.findCitiesByName(city.getCities());
 
-        // TODO make this better
+        // TODO make this message better
         if (cities.isEmpty()) {
             throw new NoResultException("No cities found for names " + city.getCities());
         }
-
-        final Map<Integer, ResponseEntity<String>> responseEntityMap = new HashMap<>();
 
         for (City foundCity : cities) {
             final UriComponents uriComponents = UriComponentsBuilder
@@ -67,8 +61,30 @@ public class WeatherService {
             final String uri = uriComponents.toUriString();
             System.out.println("uri " + uri.toString());
 
-            final ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
-            responseEntityMap.put(foundCity.getId().intValue(), response);
+//            final ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
+
+            final ResponseEntity<WeatherTemperatureList> response = restTemplate
+                .getForEntity(uri, WeatherTemperatureList.class);
+
+            System.out.println("listttttt " + response.getBody().getList().size());
+
+//            final ObjectMapper objectMapper = new ObjectMapper();
+//
+//
+//            final JSONObject responseObject = new JSONObject(uri);
+//
+//            System.out.println("JSONObjectttt "  + responseObject);
+//
+//            final JSONArray weatherObject = responseObject.getJSONArray("list");
+//
+//            System.out.println("weatherObject length " + weatherObject.length());
+//            for (int i = 0; i < weatherObject.length(); i++) {
+//                final JSONObject singleWeatherObject = weatherObject.getJSONObject(i);
+//
+//                final JSONObject singleTemperatureObject = singleWeatherObject.getJSONObject("main");
+//            }
+
+//            responseEntityMap.put(foundCity.getId().intValue(), response);
         }
 
 //        ObjectMapper objectMapper = new ObjectMapper();
